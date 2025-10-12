@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marriage Biodata</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8e2de2;
+            --secondary: #4a00e0;
+            --accent: #ff6b6b;
+            --light: #f9f7f7;
+            --dark: #333;
+            --gray: #666;
+            --light-gray: #e0e0e0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            background-color: var(--light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        /* Personal Info Grid */
+        .personal-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        
+        .info-content h3 {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .info-content p {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        /* Family Members */
+        .family-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        
+        .family-member {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .family-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .family-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        /* Expectations */
+        .expectations {
+            background: linear-gradient(135deg, #f9f7f7, #e8f4f8);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .expectations p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .expectations p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Contact Button */
+        .contact-section {
+            text-align: center;
+            padding: 30px;
+            background-color: var(--light);
+        }
+        
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(142, 45, 226, 0.3);
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(142, 45, 226, 0.4);
+        }
+        
+        .contact-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: var(--dark);
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .header {
+                padding: 40px 30px;
+            }
+            
+            .header h1 {
+                font-size: 3rem;
+            }
+            
+            .profile-img {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .section-full {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .profile-img {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .section {
+                padding: 25px 20px;
+            }
+            
+            .personal-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .family-members {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .family-members {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="./images/nitin.jpeg" alt="Nitin Pandey" class="profile-img">
+                <h1>Nitin Pandey </h1>
+                    <p>Software Engineer</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="section section-full">
+                <h2 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h2>
+                <div class="personal-info">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Phone Number</h3>
+                            <p>+91 8707510437</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>LinkedIn Profile</h3>
+                            <p><a href="https://www.linkedin.com/in/selfnitinpandey/" target="_blank">linkedin.com/in/selfnitinpandey</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Email Address</h3>
+                            <p>selfnitinpandey@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Occupation</h3>
+                            <p>Software Engineer</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Degree</h3>
+                            <p>Master Of Computer Application (MCA)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Date of Birth</h3>
+                            <p>19th Oct, 1998</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Gotra</h3>
+                            <p>Sabaran</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Type of Pandey</h3>
+                            <p>Itar</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Dharma</h3>
+                            <p>Hindu</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Nationality</h3>
+                            <p>Indian</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="section section-full">
+                <h2 class="section-title">
+                    <i class="fas fa-location"></i>
+                    Address Information
+                </h2>
+                <div class="personal-info">
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>Village</h3>
+                            <p>Basarahi</p>
+                        </div>
+                    </div>
+                   
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>Post</h3>
+                            <p>Balwarganj</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>Thana</h3>
+                            <p>Sujanganj</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>Tahsheel</h3>
+                            <p>Machhalishahar</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>District</h3>
+                            <p>Jaunpur</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>State</h3>
+                            <p>Uttar Pradesh</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-content">
+                            <h3>Pincode</h3>
+                            <p>222201</p>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+
+
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-briefcase"></i>
+                    Professional Details
+                </h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Occupation</div>
+                        <div class="detail-value">Software Engineer</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Company</div>
+                        <div class="detail-value">Softcell Technology Global Pvt Ltd</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Industry</div>
+                        <div class="detail-value">Information Technology</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Work Location</div>
+                        <div class="detail-value">Mumbai, India</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Experience</div>
+                        <div class="detail-value">2 Years 8 Months</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Education
+                </h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Highest Degree</div>
+                        <div class="detail-value">Master Of Computer Application (MCA)</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">University</div>
+                        <div class="detail-value">Integral University Lucknow </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Post Graduation Year</div>
+                        <div class="detail-value">2023</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Specialization</div>
+                        <div class="detail-value">Golang/Python</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section section-full">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Family Details
+                </h2>
+                <div class="family-members">
+                    <div class="family-member">
+                        <i class="fas fa-user-tie family-icon"></i>
+                        <div class="detail-label">Grand Father</div>
+                        <div class="detail-value">Ram Shiromani Pandey</div>
+                    </div>
+                    
+                    <div class="family-member">
+                        <i class="fas fa-user-tie family-icon"></i>
+                        <div class="detail-label">Grand Father</div>
+                        <div class="detail-value">Ram Ajor Pandey</div>
+                        <div class="detail-value">7860474847</div>
+
+                    </div>
+                </div>
+            </br>
+                <div class="family-members">
+                    <div class="family-member">
+                        <i class="fas fa-user-tie family-icon"></i>
+                        <div class="detail-label">Father</div>
+                        <div class="detail-value">Raj Kumar Pandey</div>
+                        <div class="detail-value">8928395872</div>
+                    </div>
+                    
+                    <div class="family-member">
+                        <i class="fas fa-female family-icon"></i>
+                        <div class="detail-label">Mother</div>
+                        <div class="detail-value">Neelam Pandey</div>
+                    </div>
+                    <div class="family-member">
+                        <i class="fas fa-female family-icon"></i>
+                        <div class="detail-label">Sister</div>
+                        <div class="detail-value">Ritika Pandey</div>
+                    </div>
+                    <div class="family-member">
+                        <i class="fas fa-male family-icon"></i>
+                        <div class="detail-label">Brother</div>
+                        <div class="detail-value">Nikhil Pandey</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="section section-full">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                <a href="family.html">See Our Joint Family Details</a>
+            </h2>
+
+    </div>
+</body>
+</html>

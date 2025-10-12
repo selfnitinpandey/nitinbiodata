@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree - Multiple Generations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .family-tree {
+            padding: 30px;
+            position: relative;
+        }
+
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .family-member {
+            text-align: center;
+            margin: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            width: 160px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: #8e2de2;
+        }
+
+        .grandfather-card {
+            width: 200px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border: 3px solid #4a00e0;
+        }
+
+        .member-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            border: 3px solid #4a00e0;
+        }
+
+        .grandfather-image {
+            width: 100px;
+            height: 100px;
+            border-width: 4px;
+        }
+
+        .member-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .grandfather-name {
+            font-size: 1.2rem;
+        }
+
+        .member-relation {
+            font-size: 0.9rem;
+            color: #8e2de2;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .member-details {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .connector {
+            position: absolute;
+            background-color: #8e2de2;
+            z-index: 1;
+        }
+
+        .horizontal-connector {
+            height: 3px;
+            width: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .vertical-connector {
+            width: 3px;
+            height: 40px;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .children-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .child-connector {
+            width: 3px;
+            height: 30px;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            position: absolute;
+            background-color: #8e2de2;
+        }
+
+        .grandchildren-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .grandchild-connector {
+            width: 3px;
+            height: 30px;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            position: absolute;
+            background-color: #8e2de2;
+        }
+
+        .generation-label {
+            position: absolute;
+            left: -120px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4a00e0;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .family-story {
+            background: linear-gradient(135deg, #f9f7f7, #e8f4f8);
+            padding: 30px;
+            margin: 30px;
+            border-radius: 12px;
+            border-left: 5px solid #4a00e0;
+        }
+
+        .family-story h2 {
+            color: #4a00e0;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .family-story p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f7f7;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1200px) {
+            .tree-level {
+                flex-wrap: wrap;
+            }
+
+            .family-member {
+                margin: 10px;
+            }
+
+            .generation-label {
+                position: static;
+                transform: none;
+                margin-bottom: 15px;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        .hrline {
+            height: 3px;
+            border: none;
+            background: linear-gradient(90deg,
+                    #8e2de2, #4a00e0, #8e2de2);
+            background-size: 200% 100%;
+            margin: 30px 0;
+            border-radius: 10px;
+            animation: gradientShift 3s ease infinite;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>The Pandey Family</h1>
+        </header>
+
+        <div class="family-tree">
+            <div class="tree-level">
+                <div class="family-member">
+
+                    <div class="family-member">
+                        <div class="grandchildren-container">
+                            <div class="family-member">
+                                <div class="member-card">
+                                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                        alt="Suresh Sharma" class="member-image">
+                                    <div class="member-name">Jay Pandey Baba</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="hrline">
+
+                    <div class="family-member">
+                        <div class="grandchildren-container">
+                            <div class="family-member">
+                                <div class="member-card">
+                                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                        alt="Suresh Sharma" class="member-image">
+                                    <div class="member-name">Late. Ram Kripal Pandey</div>
+                                </div>
+                            </div>
+
+                            <div class="family-member">
+                                <div class="member-card">
+                                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                        alt="Suresh Sharma" class="member-image">
+                                    <div class="member-name">Late. Bansraji Pandey</div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+                        <div class="family-member">
+                            <div class="grandchildren-container">
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Ram Shiromani Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Ram Ajor Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Late. Asharfi Pandey</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+                        <div class="family-member">
+                            <div class="grandchildren-container">
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Shusheel Pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Late. Pushpa Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Mahesh Sharma" class="member-image">
+                                        <div class="member-name">Raj Kumar Pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Mahesh Sharma" class="member-image">
+                                        <div class="member-name">Neelam Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Dinesh Sharma" class="member-image">
+                                        <div class="member-name">Vijay pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Dinesh Sharma" class="member-image">
+                                        <div class="member-name">Asha pandey</div>
+                                    </div>
+
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Ganesh Sharma" class="member-image">
+                                        <div class="member-name">Vinay Pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Ganesh Sharma" class="member-image">
+                                        <div class="member-name">Kanchan Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Harish Sharma" class="member-image">
+                                        <div class="member-name">Amit Pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Harish Sharma" class="member-image">
+                                        <div class="member-name">Babita Pandey</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+                        <div class="family-member">
+                            <div class="grandchildren-container">
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Praveen Pandey</div>
+                                    </div>
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Anu Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Nitesh Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Nitin Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Nikhil Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Nihal Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Kunal Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Darshit Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Divyansh Pandey</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+
+
+                        <div class="family-member">
+                            <div class="grandchildren-container">
+
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Pratham Pandey</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Parth Pandey</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+
+
+                        <div class="family-member">
+                            <div class="grandchildren-container">
+
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Jadawati Dubey</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my grand father sister</div>
+                                        <div class="member-relation">Married</div>
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Sunita Mishra</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my father sister</div>
+                                        <div class="member-relation">Married</div>
+
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Munita Pandey</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my father sister</div>
+                                        <div class="member-relation">Married</div>
+
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Suchita Mishra</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my father sister</div>
+                                        <div class="member-relation">Married</div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Ragini Tiwari</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my cousin sister</div>
+                                        <div class="member-relation">Married</div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Pooja Mishra</div>
+                                        <div class="member-details">Born:2002</div>
+                                        <div class="member-details">Description: she is my cousin sister</div>
+                                        <div class="member-relation">Married</div>
+
+                                    </div>
+                                </div>
+
+                                <div class="family-member">
+                                    <div class="member-card">
+                                        <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80"
+                                            alt="Suresh Sharma" class="member-image">
+                                        <div class="member-name">Ritika Pandey</div>
+                                        <div class="member-details">Born: 25-07-2002</div>
+                                        <div class="member-details">Description: she is my sister</div>
+                                        <div class="member-relation">Unmarried</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="hrline">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+</body>
+
+</html>
